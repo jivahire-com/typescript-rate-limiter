@@ -42,10 +42,12 @@ export class RateLimiter {
   private readonly buckets: Map<string, Bucket> = new Map();
 
   constructor(opts: RateLimiterOptions) {
-    // TODO(candidate): the inputs above are not validated. A senior engineer
-    //                  would reject zero/negative capacity and negative refill
-    //                  rates here — instead of letting the limiter silently
-    //                  produce nonsense token counts later.
+    if (opts.capacity <= 0) {
+      throw new RangeError("capacity must be > 0");
+    }
+    if (opts.refillPerSec < 0) {
+      throw new RangeError("refillPerSec must be >= 0");
+    }
     this.capacity = opts.capacity;
     this.refillPerSec = opts.refillPerSec;
     this.idleTtlMs = opts.idleTtlMs ?? 60_000;
@@ -102,11 +104,9 @@ export class RateLimiter {
         bucket.tokens -= cost;
         return;
       }
-      // TODO(candidate): the wait below is incomplete. When the bucket can
-      //                  never refill (refillPerSec === 0) and the request
-      //                  cannot be satisfied now, this loop runs forever
-      //                  instead of telling the caller the request is
-      //                  impossible. Make that failure mode explicit.
+      if (this.refillPerSec === 0) {
+        throw new Error("cannot acquire tokens: no refill configured and insufficient tokens available");
+      }
       const waitMs = this.msUntilTokens(bucket, cost);
       await sleep(waitMs);
     }
@@ -153,11 +153,7 @@ export class RateLimiter {
     const elapsedSec = (t - bucket.lastRefill) / 1000;
     if (elapsedSec <= 0) return;
     const added = elapsedSec * this.refillPerSec;
-    // TODO(candidate): the line below has a cap-overflow bug. After a long
-    //                  idle period the bucket can end up with more tokens
-    //                  than `capacity`, which lets a caller burst past the
-    //                  intended limit.
-    bucket.tokens = bucket.tokens + added;
+    bucket.tokens = Math.min(this.capacity, bucket.tokens + added);
     bucket.lastRefill = t;
     bucket.lastTouched = t;
   }
