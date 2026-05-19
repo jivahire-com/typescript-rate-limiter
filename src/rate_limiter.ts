@@ -161,7 +161,7 @@ export class RateLimiter {
   private msUntilTokens(bucket: Bucket, cost: number): number {
     if (this.refillPerSec <= 0) {
       return 1_000;
-    }
+    } 
     const needed = cost - bucket.tokens;
     if (needed <= 0) return 0;
     return Math.max(1, Math.ceil((needed / this.refillPerSec) * 1000));
