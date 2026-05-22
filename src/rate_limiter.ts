@@ -95,6 +95,13 @@ export class RateLimiter {
       return;
     }
 
+    // If refill rate is zero, tokens will never grow — reject immediately.
+    if (this.refillPerSec === 0) {
+      throw new Error(
+        "acquire: insufficient tokens and refillPerSec is 0 — request can never be satisfied"
+      );
+    }
+
     const bucket = this.getBucket(key);
     while (true) {
       this.refill(bucket);
