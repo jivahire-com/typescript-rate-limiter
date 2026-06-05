@@ -15,3 +15,8 @@
 {"ts":1780645067507,"event_type":"auto_commit","payload":{"ts":"2026-06-05T07:37:44.116Z"},"id":"1780645067507.6412.15"}
 {"ts":1780645247603,"event_type":"auto_commit","payload":{"ts":"2026-06-05T07:40:44.121Z"},"id":"1780645247603.6412.16"}
 {"ts":1780645427503,"event_type":"auto_commit","payload":{"ts":"2026-06-05T07:43:44.129Z"},"id":"1780645427503.6412.17"}
+{"ts":1780645607599,"event_type":"auto_commit","payload":{"ts":"2026-06-05T07:46:44.142Z"},"id":"1780645607599.6412.18"}
+{"ts":1780645677140,"event_type":"app_unfocused","payload":{"ts":1780645677140},"id":"1780645677140.6412.19"}
+{"ts":1780645679873,"event_type":"app_focused","payload":{"time_away_seconds":2.733},"id":"1780645679873.6412.20"}
+{"ts":1780645682081,"event_type":"app_unfocused","payload":{"ts":1780645682081},"id":"1780645682081.6412.21"}
+{"ts":1780645684314,"event_type":"app_focused","payload":{"time_away_seconds":2.232},"id":"1780645684314.6412.22"}
